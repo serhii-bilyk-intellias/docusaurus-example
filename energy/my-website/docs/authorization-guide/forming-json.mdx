@@ -1,0 +1,88 @@
+---
+sidebar_position: 2
+---
+
+# Forming the JSON Web Token payload
+
+To form the JSON Web Token, the following information is required:
+
+- Your Emulate retailer ID, provided by Emulate.
+- A customer identifier. This should be an identifier that can be used by the retailer to look up a customer. It is how customers can be located in the Emulate portal, which can be used by retailers for customer support.
+
+- For each facility (meter) of the customer:
+
+  - The retailer's identifier for the facility
+  - The address
+  - The price area (for example, SE1); this is essential for spot price optimization
+  - Optionally, the location (latitude and longitude) of the facility; if not provided, Emulate will geocode the address
+  - Optionally, the ID of the power grid of the facility (will be required for local intraday trading)
+
+Except for the Emulate retailer ID, you will need to write code to obtain these values from the retailer's customer database. **For testing purposes, it is of course possible to use fake data - but we recommend only doing this in the stage environment!**
+
+The JSON Web Token's payload should be a JSON object formed as indicated below:
+
+```json
+{
+  // The audience (a fixed string indicating the JWT is for Emulate; you
+  // should send it exactly as shown here.)
+  "aud": "https://api.emulate.network/",
+  // Your Emulate retailer ID
+  "retailer": 1,
+  // An expiration time for this JWT, in seconds since the UNIX epoch.
+  // Optional, but recommended, otherwise the token is valid forever.
+  "exp": 1649773792,
+  // Your ID for your customer.
+  "customer": "23421",
+  // An array of at least one facility (location where the customer has a
+  // meter).
+  "facilities": [
+    {
+      // Your ID for the customer's facility.
+      "id": "ABC1323",
+      // The address of the facility.
+      "address": "Sankt Petri kyrkogata 7, 222 21 Lund, Sweden",
+      // The price area of the facility
+      "price_area": "SE3",
+      // Optionally, the coordinates of the facility.
+      "location": {
+        "lat": 55.7063455,
+        "lng": 13.1913016
+      },
+      // Optionally, the ID of the power grid that the facility is on.
+      "grid_id": "LND"
+    }
+  ]
+}
+```
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+<Tabs>
+<TabItem value="ts" label="typescript">
+
+```typescript
+const str: string = 'hello'
+```
+
+</TabItem>
+<TabItem value="py" label="python">
+
+```py
+def hello_world():
+  print("Hello, world!")
+```
+
+</TabItem>
+<TabItem value="java" label="java">
+
+```java
+class HelloWorld {
+  public static void main(String args[]) {
+    System.out.println("Hello, World");
+  }
+}
+```
+
+</TabItem>
+</Tabs>
